@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="480.0" prefWidth="600.0" spacing="20" style="-fx-background-color: linear-gradient(to bottom right, #2C3E50, #3498DB);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.smartinvoicesystem.controller.LoginController">
+
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="40.0" />
+    </padding>
+
+    <!-- Header -->
+    <Label style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: white;" text="Smart Invoice Login" />
+
+    <!-- Form Card -->
+    <VBox alignment="CENTER" prefHeight="223.0" prefWidth="495.0" spacing="15" style="-fx-background-color: white; -fx-padding: 30;                  -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);">
+
+        <GridPane alignment="CENTER" hgap="10" prefHeight="99.0" prefWidth="461.0" vgap="15">
+
+            <Label style="-fx-font-size: 14;" text="Username:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="usernameField" promptText="Enter username" style="-fx-pref-width: 200;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+            <Label style="-fx-font-size: 14;" text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="emailField" promptText="Enter email" style="-fx-pref-width: 200;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label style="-fx-font-size: 14;" text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <PasswordField fx:id="passwordField" promptText="Enter password" style="-fx-pref-width: 200;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+
+        <Button onAction="#handleLogin" style="-fx-background-color: #3498DB; -fx-text-fill: white;-fx-font-size: 16; -fx-padding: 8 24;  -fx-background-radius: 8; -fx-cursor: hand;" text="Login" />
+    </VBox>
+</VBox>

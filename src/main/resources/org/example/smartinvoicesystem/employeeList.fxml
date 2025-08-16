@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.smartinvoicesystem.controller.EmployeeController"
+            prefHeight="600.0" prefWidth="600.0">
+
+    <children>
+        <!-- Back Button (Top-Right Corner) -->
+        <Button layoutX="520" layoutY="10" onAction="#onBackClick" text="← Back" />
+
+        <!-- Title -->
+        <Label layoutX="200" layoutY="10" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Employee Management" />
+
+        <!-- Employee Table -->
+        <TableView fx:id="employeeTable" layoutX="50" layoutY="50" prefHeight="200" prefWidth="500">
+            <columns>
+                <TableColumn fx:id="idColumn" prefWidth="80" text="ID" />
+                <TableColumn fx:id="nameColumn" prefWidth="200" text="Name" />
+                <TableColumn fx:id="positionColumn" prefWidth="220" text="Position" />
+            </columns>
+        </TableView>
+
+        <!-- Input Fields -->
+        <Label layoutX="50" layoutY="270" text="Name:" />
+        <TextField fx:id="nameField" layoutX="100" layoutY="265" prefWidth="150" />
+
+        <Label layoutX="270" layoutY="270" text="Position:" />
+        <TextField fx:id="positionField" layoutX="330" layoutY="265" prefWidth="150" />
+
+        <!-- Buttons -->
+        <Button layoutX="50" layoutY="310" onAction="#onAddEmployee" prefWidth="120" text="Add" />
+        <Button layoutX="190" layoutY="310" onAction="#onRemoveEmployee" prefWidth="120" text="Remove" />
+
+        <!-- Search -->
+        <Label layoutX="50" layoutY="360" text="Search Name:" />
+        <TextField fx:id="searchField" layoutX="150" layoutY="355" prefWidth="200" />
+        <Button layoutX="370" layoutY="355" onAction="#onSearchEmployee" text="Search" />
+
+        <!-- Search Results Table -->
+        <TableView fx:id="searchResultTable" layoutX="50" layoutY="400" prefHeight="150" prefWidth="500">
+            <columns>
+                <TableColumn fx:id="searchIdColumn" prefWidth="80" text="ID" />
+                <TableColumn fx:id="searchNameColumn" prefWidth="200" text="Name" />
+                <TableColumn fx:id="searchPositionColumn" prefWidth="220" text="Position" />
+            </columns>
+        </TableView>
+
+        <!-- Status -->
+        <Label fx:id="resultLabel" layoutX="50" layoutY="560" style="-fx-text-fill: red;" />
+    </children>
+</AnchorPane>

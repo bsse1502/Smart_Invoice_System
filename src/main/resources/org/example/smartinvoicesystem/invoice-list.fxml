@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.smartinvoicesystem.controller.InvoiceController">
+
+    <Label layoutX="300" layoutY="10" style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Create Invoice" />
+
+    <!-- Client Info -->
+    <Label layoutX="40.0" layoutY="40.0" text="Customer Name:" />
+    <TextField fx:id="nameField" layoutX="160.0" layoutY="36.0" prefWidth="140.0" />
+
+    <Label layoutX="40.0" layoutY="80.0" text="Customer Phone:" />
+    <TextField fx:id="phoneField" layoutX="160.0" layoutY="76.0" prefWidth="140.0" />
+
+    <Button fx:id="addCustomerButton" layoutX="315.0" layoutY="76.0" onAction="#handleAddCustomer" text="Add Customer" />
+
+    <!-- Client ID Combo -->
+    <Label layoutX="57.0" layoutY="170.0" text="Client ID:" />
+    <ComboBox fx:id="clientIdField" layoutX="156.0" layoutY="166.0" onAction="#onClientSelected" prefWidth="143.0" />
+
+    <!-- Employee -->
+    <Label layoutX="408.0" layoutY="170.0" text="Employee ID:" />
+    <ComboBox fx:id="userIdField" layoutX="484.0" layoutY="166.0" prefWidth="120" />
+
+    <!-- Date -->
+    <Label layoutX="617.0" layoutY="170.0" text="Date:" />
+    <TextField fx:id="dateField" layoutX="653.0" layoutY="166.0" prefWidth="120" promptText="YYYY-MM-DD" />
+
+    <!-- Payment Status -->
+    <Label layoutX="71.0" layoutY="220.0" text="Payment Status:" />
+    <ComboBox fx:id="paymentStatusBox" layoutX="176.0" layoutY="212.0" prefWidth="150" />
+
+    <!-- Total -->
+    <Label layoutX="493.0" layoutY="208.0" text="Total:" />
+    <TextField fx:id="totalField" editable="false" layoutX="544.0" layoutY="204.0" prefWidth="120" />
+
+    <!-- Table -->
+    <TableView fx:id="itemTable" layoutX="35.0" layoutY="253.0" prefHeight="200" prefWidth="700">
+        <columns>
+            <TableColumn fx:id="productIdColumn" prefWidth="100" text="Product ID" />
+            <TableColumn fx:id="quantityColumn" prefWidth="100" text="Quantity" />
+            <TableColumn fx:id="priceColumn" prefWidth="150" text="Per Unit Price" />
+        </columns>
+    </TableView>
+
+    <!-- Product Input -->
+    <Label layoutX="71.0" layoutY="478.0" text="Product ID:" />
+    <ComboBox fx:id="productIdField" layoutX="140.0" layoutY="474.0" onAction="#onProductSelected" prefWidth="80" />
+
+    <Label layoutX="251.0" layoutY="478.0" text="Quantity:" />
+    <TextField fx:id="quantityField" layoutX="309.0" layoutY="474.0" prefWidth="80" />
+
+    <Label layoutX="416.0" layoutY="478.0" text="Per Unit Price:" />
+    <TextField fx:id="unitPriceField" editable="false" layoutX="494.0" layoutY="474.0" prefWidth="100" />
+
+    <!-- Submit -->
+    <Button layoutX="385.0" layoutY="513.0" onAction="#onCreateInvoice" prefWidth="150" text="Create Invoice" />
+
+    <Button layoutX="700" layoutY="20" onAction="#onBackClick" text="Back" />
+    <Label fx:id="statusLabel" layoutX="40" layoutY="560" style="-fx-text-fill: green;" />
+
+    <Button fx:id="resetCustomerButton" layoutX="430.0" layoutY="76.0" onAction="#handleResetCustomer" text="Reset" />
+    <Button fx:id="addItemButton" layoutX="664.0" layoutY="474.0" text="Add Item" onAction="#handleAddItem" />
+
+    <Button fx:id="calculateTotalButton" layoutX="550.0" layoutY="513.0" text="Calculate Total" onAction="#handleCalculateTotal" />
+
+
+</AnchorPane>

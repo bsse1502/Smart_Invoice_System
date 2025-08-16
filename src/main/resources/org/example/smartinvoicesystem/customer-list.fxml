@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.smartinvoicesystem.controller.CustomerController">
+
+    <children>
+
+        <!-- Back Button (Top-Right) -->
+        <Button layoutX="660" layoutY="10" onAction="#handleBack" text="← Back" />
+
+        <!-- Title -->
+        <Label layoutX="280" layoutY="10" style="-fx-font-size: 20px;" text="Customer List" />
+
+        <!-- Client Table -->
+        <TableView fx:id="customerTable" layoutX="50" layoutY="50" prefHeight="200" prefWidth="650">
+            <columns>
+                <TableColumn fx:id="idColumn" prefWidth="100" text="ID" />
+                <TableColumn fx:id="nameColumn" prefWidth="300" text="Name" />
+                <TableColumn fx:id="costColumn" prefWidth="250" text="Phone" />
+            </columns>
+        </TableView>
+
+        <!-- Add Client Section -->
+        <Label layoutX="50" layoutY="270" text="Name:" />
+        <TextField fx:id="nameField" layoutX="100" layoutY="265" prefWidth="200" />
+
+        <Label layoutX="320" layoutY="270" text="Phone:" />
+        <TextField fx:id="costField" layoutX="380" layoutY="265" prefWidth="200" />
+
+        <Button layoutX="600" layoutY="265" onAction="#handleAddCustomer" text="Add Client" />
+
+        <!-- Search Section -->
+        <TextField fx:id="searchField" layoutX="50" layoutY="310" prefWidth="400" promptText="Enter name to search" />
+        <Button layoutX="470" layoutY="310" onAction="#handleSearch" text="Search" />
+
+        <!-- Result Message -->
+        <Label fx:id="resultLabel" layoutX="50" layoutY="340" style="-fx-font-size: 14px;" textFill="red" />
+
+        <!-- Search Result Table -->
+        <TableView fx:id="searchResultTable" layoutX="50" layoutY="370" prefHeight="200" prefWidth="650">
+            <columns>
+                <TableColumn fx:id="searchIdColumn" prefWidth="100" text="ID" />
+                <TableColumn fx:id="searchNameColumn" prefWidth="300" text="Name" />
+                <TableColumn fx:id="searchCostColumn" prefWidth="250" text="Phone" />
+            </columns>
+        </TableView>
+
+    </children>
+
+</AnchorPane>

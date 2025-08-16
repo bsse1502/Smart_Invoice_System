@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="561.0" prefWidth="714.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.smartinvoicesystem.controller.ProductController">
+
+    <VBox layoutX="34.0" layoutY="14.0" prefHeight="533.0" prefWidth="665.0" spacing="10.0">
+
+        <!-- Title and Back Button -->
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <Label text="Product Management">
+                <font>
+                    <Font name="Arial Bold" size="24" />
+                </font>
+            </Label>
+            <Button fx:id="backButton" onAction="#onBackButton" style="-fx-font-size: 14px; -fx-padding: 5 15;" text="← Back" />
+        </HBox>
+
+        <!-- Search Section -->
+        <HBox spacing="10">
+            <TextField fx:id="searchNameField" prefWidth="200" promptText="Search by name" />
+            <TextField fx:id="searchCategoryField" prefWidth="200" promptText="Search by category" />
+            <Button fx:id="searchButton" onAction="#onSearchButton" text="Search" />
+            <Button fx:id="resetButton" onAction="#onResetButton" text="Reset" />
+        </HBox>
+
+        <!-- Form -->
+        <GridPane hgap="10" vgap="10">
+            <Label text="Product Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <TextField fx:id="productNameField" promptText="Enter product name" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+            <Label text="Price:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <TextField fx:id="priceField" promptText="Enter price" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+            <Label text="Quantity:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <TextField fx:id="quantityField" promptText="Enter quantity" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+            <Label text="Category:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <TextField fx:id="categoryField" promptText="Enter product category" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+            <columnConstraints>
+                <ColumnConstraints />
+                <ColumnConstraints />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+                <RowConstraints />
+            </rowConstraints>
+        </GridPane>
+
+        <!-- Buttons -->
+        <HBox spacing="10">
+            <Button fx:id="addButton" onAction="#onAddButton" text="Add" />
+            <Button fx:id="updateButton" onAction="#onUpdateButton" text="Update" />
+            <Button fx:id="deleteButton" onAction="#onDeleteButton" text="Delete" />
+            <Button fx:id="clearButton" onAction="#onClearButton" text="Clear" />
+        </HBox>
+
+        <!-- Table -->
+        <TableView fx:id="productTable" prefHeight="260.0" prefWidth="691.0">
+            <columns>
+                <TableColumn fx:id="nameColumn" prefWidth="200" text="Product Name">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="name" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="priceColumn" prefWidth="150" text="Price">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="price" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="quantityColumn" prefWidth="150" text="Quantity">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="quantity" />
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="categoryColumn" prefWidth="150" text="Category">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="category" />
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </VBox>
+
+</AnchorPane>

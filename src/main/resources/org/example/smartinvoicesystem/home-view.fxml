@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: linear-gradient(to bottom right, #2C3E50, #3498DB);" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.smartinvoicesystem.controller.HomeController">
+
+    <VBox alignment="CENTER" spacing="30" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <!-- Header Section -->
+        <VBox alignment="CENTER" spacing="15">
+            <Text style="-fx-font-size: 40; -fx-font-weight: bold; -fx-fill: white;" text="Smart Invoice System">
+                <effect>
+                    <DropShadow color="#00000066" offsetX="2" offsetY="2" radius="5" />
+                </effect>
+            </Text>
+
+            <Text style="-fx-font-size: 18; -fx-fill: #ECF0F1;" text="Welcome to your business management solution" />
+        </VBox>
+
+        <!-- Main Content -->
+        <VBox alignment="CENTER" maxHeight="400.0" maxWidth="600.0" spacing="20" style="-fx-background-color: white; -fx-background-radius: 20;">
+
+            <padding>
+                <Insets bottom="30" left="40" right="40" top="30" />
+            </padding>
+
+            <effect>
+                <DropShadow color="#00000033" offsetX="0" offsetY="0" radius="10" />
+            </effect>
+
+
+            <Text style="-fx-font-size: 24; -fx-font-weight: bold; -fx-fill: #2C3E50;" text="Create Invoice Initialization" />
+
+            <Text style="-fx-font-size: 14; -fx-fill: #7f8c8d;" text="Click the button below to create Invoice " textAlignment="CENTER" wrappingWidth="400.0" />
+
+            <Button fx:id="initButton" onAction="#goToLoginPage" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #3498DB; -fx-text-fill: white;                            -fx-font-weight: bold; -fx-font-size: 16;                            -fx-background-radius: 8; -fx-cursor: hand;" text="Get Started">
+                <padding>
+                    <Insets bottom="10" left="20" right="20" top="10" />
+                </padding>
+                <styleClass>
+                    <String fx:value="button" />
+                </styleClass>
+                <effect>
+                    <DropShadow color="#00000033" offsetX="0" offsetY="3" radius="8" />
+                </effect>
+            </Button>
+
+            <Text fx:id="statusText" style="-fx-font-size: 14; -fx-fill: #2ecc71;" />
+
+            <!-- Progress Indicator -->
+            <ProgressIndicator fx:id="progressIndicator" visible="false" />
+        </VBox>
+
+        <!-- Footer -->
+        <HBox alignment="CENTER" spacing="10.0">
+            <Text style="-fx-fill: white; -fx-font-size: 12;" text="© 2024 Smart Invoice System" />
+        </HBox>
+
+    </VBox>
+</AnchorPane>
