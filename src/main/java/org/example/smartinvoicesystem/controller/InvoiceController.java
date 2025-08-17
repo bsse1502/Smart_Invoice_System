@@ -8,6 +8,8 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import database.ConnectDB;
+import org.example.smartinvoicesystem.models.draft.DraftManager;
+import org.example.smartinvoicesystem.models.draft.DraftMemento;
 
 import java.io.IOException;
 import java.sql.*;
@@ -35,6 +37,8 @@ public class InvoiceController {
     @FXML private Label statusLabel;
 
     private final ObservableList<Item> items = FXCollections.observableArrayList();
+    private final org.example.smartinvoicesystem.models.draft.DraftSale draftSale = new org.example.smartinvoicesystem.models.draft.DraftSale();
+    private final DraftManager draftManager = new DraftManager();
 
     @FXML
     public void initialize() {
@@ -73,7 +77,7 @@ public class InvoiceController {
     @FXML
     private void onClientSelected() {
         String selectedClientId = clientIdField.getValue();
-        if (selectedClientId == null) return;
+        if (!isValidString(selectedClientId)) return;
 
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement("SELECT name, phone FROM clients WHERE id = ?")) {
@@ -102,7 +106,7 @@ public class InvoiceController {
         String name = nameField.getText().trim();
         String phone = phoneField.getText().trim();
 
-        if (name.isEmpty() || phone.isEmpty()) {
+        if (!isValidString(name) || !isValidString(phone)) {
             statusLabel.setText("Enter both name and phone.");
             return;
         }
@@ -157,7 +161,7 @@ public class InvoiceController {
     @FXML
     private void onProductSelected() {
         String productId = productIdField.getValue();
-        if (productId == null) return;
+        if (!isValidString(productId)) return;
 
         try (Connection conn = ConnectDB.getConnection();
              PreparedStatement stmt = conn.prepareStatement("SELECT price FROM products WHERE id = ?")) {
@@ -176,46 +180,168 @@ public class InvoiceController {
     }
 
     @FXML
-    private void onCreateInvoice() {
-        String sqlInvoice = "INSERT INTO invoices (client_id, user_id, invoice_date, total, payment_status) VALUES (?, ?, ?, ?, ?)";
-        String sqlItem = "INSERT INTO invoice_items (invoice_id, product_id, quantity, per_unit_price) VALUES (?, ?, ?, ?)";
+    private void handleAddItem() {
+        String productIdStr = productIdField.getValue();
+        String quantityStr = quantityField.getText();
+        String priceStr = unitPriceField.getText();
 
+        if (!isValidString(productIdStr) || !isValidString(quantityStr) || !isValidString(priceStr)) {
+            statusLabel.setText("Select product and enter quantity.");
+            return;
+        }
+
+        int productId;
+        int quantity;
+        double price;
+
+        try {
+            productId = Integer.parseInt(productIdStr.trim());
+            quantity = Integer.parseInt(quantityStr.trim());
+            price = Double.parseDouble(priceStr.trim());
+
+            if (quantity <= 0 || price < 0) {
+                statusLabel.setText("Quantity must be > 0 and price >= 0.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            statusLabel.setText("Invalid quantity or price.");
+            return;
+        }
+
+        // Check available quantity from database
+        String quantityQuery = "SELECT quantity FROM products WHERE id = ?";
         try (Connection conn = ConnectDB.getConnection();
-             PreparedStatement invoiceStmt = conn.prepareStatement(sqlInvoice, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement stmt = conn.prepareStatement(quantityQuery)) {
 
-            invoiceStmt.setInt(1, Integer.parseInt(clientIdField.getValue()));
-            invoiceStmt.setInt(2, Integer.parseInt(userIdField.getValue()));
-            invoiceStmt.setString(3, dateField.getText());
-            invoiceStmt.setDouble(4, Double.parseDouble(totalField.getText()));
-            invoiceStmt.setString(5, paymentStatusBox.getValue());
-
-            int rows = invoiceStmt.executeUpdate();
-            if (rows == 0) throw new SQLException("Invoice creation failed.");
-
-            ResultSet keys = invoiceStmt.getGeneratedKeys();
-            if (keys.next()) {
-                int invoiceId = keys.getInt(1);
-
-                try (PreparedStatement itemStmt = conn.prepareStatement(sqlItem)) {
-                    for (Item item : items) {
-                        itemStmt.setInt(1, invoiceId);
-                        itemStmt.setInt(2, item.getProductId());
-                        itemStmt.setInt(3, item.getQuantity());
-                        itemStmt.setDouble(4, item.getUnitPrice());
-                        itemStmt.addBatch();
+            stmt.setInt(1, productId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int availableQuantity = rs.getInt("quantity");
+                    if (quantity > availableQuantity) {
+                        statusLabel.setText("Insufficient quantity! Available: " + availableQuantity);
+                        return;
                     }
-                    itemStmt.executeBatch();
+                } else {
+                    statusLabel.setText("Product not found.");
+                    return;
                 }
-
-                statusLabel.setText("Invoice created!");
-                items.clear();
-                itemTable.refresh();
-                totalField.clear();
             }
 
-        } catch (Exception e) {
-            statusLabel.setText("Error: " + e.getMessage());
+            // Add item to TableView
+            items.add(new Item(productId, quantity, price));
+
+            // Clear input fields
+            productIdField.setValue(null);
+            quantityField.clear();
+            unitPriceField.clear();
+
+            statusLabel.setText("Product added to list.");
+
+        } catch (SQLException e) {
             e.printStackTrace();
+            statusLabel.setText("Database error while checking quantity.");
+        }
+    }
+
+    @FXML
+    private void handleCalculateTotal() {
+        double total = 0;
+        for (Item item : items) {
+            total += item.getQuantity() * item.getUnitPrice();
+        }
+        totalField.setText(String.format("%.2f", total));
+        statusLabel.setText("Total calculated.");
+    }
+
+    @FXML
+    private void onCreateInvoice() {
+        String clientIdStr = clientIdField.getValue();
+        String userIdStr = userIdField.getValue();
+        String totalStr = totalField.getText();
+
+        if (!isValidString(clientIdStr) || !isValidString(userIdStr) || !isValidString(totalStr)) {
+            statusLabel.setText("Please fill client, user, and total fields.");
+            return;
+        }
+
+        try {
+            int clientId = Integer.parseInt(clientIdStr.trim());
+            int userId = Integer.parseInt(userIdStr.trim());
+            double total = Double.parseDouble(totalStr.trim());
+
+            String sqlInvoice = "INSERT INTO invoices (client_id, user_id, invoice_date, total, payment_status) VALUES (?, ?, ?, ?, ?)";
+            String sqlItem = "INSERT INTO invoice_items (invoice_id, product_id, quantity, per_unit_price) VALUES (?, ?, ?, ?)";
+
+            try (Connection conn = ConnectDB.getConnection();
+                 PreparedStatement invoiceStmt = conn.prepareStatement(sqlInvoice, Statement.RETURN_GENERATED_KEYS)) {
+
+                invoiceStmt.setInt(1, clientId);
+                invoiceStmt.setInt(2, userId);
+                invoiceStmt.setString(3, dateField.getText());
+                invoiceStmt.setDouble(4, total);
+                invoiceStmt.setString(5, paymentStatusBox.getValue());
+
+                int rows = invoiceStmt.executeUpdate();
+                if (rows == 0) throw new SQLException("Invoice creation failed.");
+
+                ResultSet keys = invoiceStmt.getGeneratedKeys();
+                if (keys.next()) {
+                    int invoiceId = keys.getInt(1);
+
+                    try (PreparedStatement itemStmt = conn.prepareStatement(sqlItem)) {
+                        for (Item item : items) {
+                            itemStmt.setInt(1, invoiceId);
+                            itemStmt.setInt(2, item.getProductId());
+                            itemStmt.setInt(3, item.getQuantity());
+                            itemStmt.setDouble(4, item.getUnitPrice());
+                            itemStmt.addBatch();
+                        }
+                        itemStmt.executeBatch();
+                    }
+
+                    statusLabel.setText("Invoice created!");
+                    items.clear();
+                    itemTable.refresh();
+                    totalField.clear();
+                }
+
+            }
+
+        } catch (NumberFormatException e) {
+            statusLabel.setText("Invalid client, user, or total value.");
+        } catch (SQLException e) {
+            statusLabel.setText("Error creating invoice.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleSaveDraft() {
+        ObservableList<Item> tableItems = itemTable.getItems();
+        ObservableList<DraftMemento.DraftItem> draftItems = FXCollections.observableArrayList();
+
+        for (Item i : tableItems) {
+            draftItems.add(new DraftMemento.DraftItem(i.getProductId(), i.getQuantity(), i.getUnitPrice()));
+        }
+
+        draftSale.setItems(draftItems);
+        draftManager.save(draftSale.saveToMemento());
+        statusLabel.setText("Draft saved!");
+    }
+
+    @FXML
+    private void handleUndoDraft() {
+        DraftMemento memento = draftManager.undo();
+        if (memento != null) {
+            draftSale.restoreFromMemento(memento);
+
+            itemTable.getItems().clear();
+            for (DraftMemento.DraftItem di : draftSale.getItems()) {
+                itemTable.getItems().add(new Item(di.getProductId(), di.getQuantity(), di.getUnitPrice()));
+            }
+            statusLabel.setText("Draft restored!");
+        } else {
+            statusLabel.setText("No draft to undo!");
         }
     }
 
@@ -252,47 +378,8 @@ public class InvoiceController {
         public DoubleProperty unitPriceProperty() { return unitPrice; }
     }
 
-
-    @FXML
-    private void handleAddItem() {
-        String productIdStr = productIdField.getValue();
-        String quantityStr = quantityField.getText();
-        String priceStr = unitPriceField.getText();
-
-        if (productIdStr == null || quantityStr.isEmpty() || priceStr.isEmpty()) {
-            statusLabel.setText("Select product and enter quantity.");
-            return;
-        }
-
-        try {
-            int productId = Integer.parseInt(productIdStr);
-            int quantity = Integer.parseInt(quantityStr);
-            double price = Double.parseDouble(priceStr);
-
-            // Add item to list
-            items.add(new Item(productId, quantity, price));
-
-            // Clear input for next product
-            productIdField.setValue(null);
-            quantityField.clear();
-            unitPriceField.clear();
-
-            statusLabel.setText("Product added to list.");
-        } catch (NumberFormatException e) {
-            statusLabel.setText("Invalid quantity or price.");
-        }
+    // Utility method to check null or empty string
+    private boolean isValidString(String s) {
+        return s != null && !s.trim().isEmpty();
     }
-
-    @FXML
-    private void handleCalculateTotal() {
-        double total = 0;
-        for (Item item : items) {
-            total += item.getQuantity() * item.getUnitPrice();
-        }
-        totalField.setText(String.format("%.2f", total));
-        statusLabel.setText("Total calculated.");
-    }
-
-
-
 }

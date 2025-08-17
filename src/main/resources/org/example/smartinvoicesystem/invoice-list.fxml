@@ -65,6 +65,8 @@
     <Button fx:id="addItemButton" layoutX="664.0" layoutY="474.0" text="Add Item" onAction="#handleAddItem" />
 
     <Button fx:id="calculateTotalButton" layoutX="550.0" layoutY="513.0" text="Calculate Total" onAction="#handleCalculateTotal" />
+    <Button layoutX="35.0" layoutY="520.0" text="Save Draft" onAction="#handleSaveDraft" />
+    <Button layoutX="140.0" layoutY="520.0" text="Undo Draft" onAction="#handleUndoDraft" />
 
 
 </AnchorPane>
